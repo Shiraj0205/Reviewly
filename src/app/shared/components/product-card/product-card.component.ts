@@ -1,6 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ShoppingCartService } from 'shared/services/shopping-cart.service';
 import { ShoppingCart } from 'shared/models/shopping-cart';
+import { RatingService } from 'shared/services/rating.service';
+import { AuthService } from 'shared/services/auth.service';
+import { AppUser } from 'shared/models/app-user';
+import { Rating } from 'shared/models/rating';
 
 @Component({
   selector: 'product-card',
@@ -12,28 +16,28 @@ export class ProductCardComponent {
   @Input('product') product;
   @Input('show-actions') showActions = true;
   @Input('shopping-cart') shoppingCart : ShoppingCart;
-  @Input() rating: number;
-  @Input() itemId: number;
-  @Output() ratingClick: EventEmitter<any> = new EventEmitter<any>();
+   
+  appUser : AppUser;
+  rating = 0;
 
-  constructor(private cartService : ShoppingCartService) { 
+  constructor(private cartService : ShoppingCartService, 
+    private ratingService : RatingService,
+    private auth : AuthService) { 
   }
 
-  addToCart(){
-    this.cartService.addToCart(this.product);
-  }
-
-  inputName: string;
-  ngOnInit() {
-    this.inputName = this.itemId + '_rating';
-  }
   
-  onClick(rating: number): void {
-    this.rating = rating;
-    this.ratingClick.emit({
-      itemId: this.itemId,
-      rating: rating
-    });
-  }
 
+  
+  ngOnInit() {
+    this.auth.appUser$.subscribe(appUser => { 
+      this.appUser = appUser;
+      this.ratingService.get(this.appUser.id, this.product.id).subscribe(
+        r => {
+          var tt = r[0] as Rating;
+          console.log(tt.rating);
+          this.rating = tt.rating;
+        }
+      );
+  });
+}
 }
