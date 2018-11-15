@@ -9,6 +9,7 @@ import { ProductService } from 'shared/services/product.service';
 import { UserService } from 'shared/services/user.service';
 import { ShoppingCartService } from 'shared/services/shopping-cart.service';
 import { OrderService } from 'shared/services/order.service';
+import { RatingComponent } from './components/rating/rating.component';
 
 @NgModule({
   imports: [
@@ -16,7 +17,8 @@ import { OrderService } from 'shared/services/order.service';
   ],
   declarations: [
     ProductCardComponent,
-    ProductQuantityComponent
+    ProductQuantityComponent,
+    RatingComponent
   ],
   exports:[
     ProductCardComponent,
